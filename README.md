@@ -8,6 +8,7 @@
 ## The problem
 
 From my teenage years, I spent 15–30 minutes every single day adjusting my AC remote — changing modes, toggling eco and powerful settings, adjusting temperature. It was a habit I never managed to break. So I decided to build a system that learns my behaviour and automates the AC on its own.
+
 <img width="2252" height="1894" alt="remote_sim" src="https://github.com/user-attachments/assets/9e1bcc36-450a-499b-86df-8bfceb4a3e85" />
 
 
@@ -117,9 +118,13 @@ python convert_db_to_csv.py
 ## Roadmap
 
 - [x] Custom IR remote simulator on Wemos D1
+
       <img width="2252" height="1894" alt="remote_sim" src="https://github.com/user-attachments/assets/805da88b-bc01-4244-a0d0-b04bc2b98096" />
+      
 - [x] Firebase Realtime Database integration
+      
       <img width="2880" height="1794" alt="firebase_1" src="https://github.com/user-attachments/assets/9735f134-22b8-4b62-a6ff-339f0e55bf92" />
+      
 - [x] SQLite sync script (real-time + 15-min polling)
       <img width="2332" height="1218" alt="server_loging" src="https://github.com/user-attachments/assets/763b2a64-30a2-4120-9894-a7a60e63bc9e" />
 - [x] 1000+ rows of behaviour data collected
