@@ -263,7 +263,7 @@ Every 10 minutes
 ```
 
 ### Sensor_log:
-<img width="576" height="838" alt="Sensor_logs_Realtime" src="https://github.com/user-attachments/assets/08b935da-7027-426c-bdad-f7acb38009ed" />
+<img width="576" height="700" alt="Sensor_logs_Realtime" src="https://github.com/user-attachments/assets/08b935da-7027-426c-bdad-f7acb38009ed" />
 
 
 ---
@@ -281,6 +281,9 @@ Every inference cycle logs a full status line: timestamp, raw sensor values, pre
 <img width="2076" height="1214" alt="Complete_automation_server_log" src="https://github.com/user-attachments/assets/ff7d051a-65db-4037-a68e-80b92d5101cf" />
 
 
+<img width="634" height="264" alt="commands" src="https://github.com/user-attachments/assets/8a54ab60-f365-423d-b269-93132ae33372" />
+
+
 ---
 
 ### Predictions vs Actual Behaviour
@@ -289,7 +292,6 @@ After deployment, model predictions were compared against continued manual press
 
 <img width="2082" height="1314" alt="Predictio_vs_actual" src="https://github.com/user-attachments/assets/9424adb3-1794-40c9-bf16-08e52402c3db" />
 
-<img width="634" height="264" alt="commands" src="https://github.com/user-attachments/assets/8a54ab60-f365-423d-b269-93132ae33372" />
 
 ---
 
