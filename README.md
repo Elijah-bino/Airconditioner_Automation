@@ -133,7 +133,172 @@ python convert_db_to_csv.py
       
 <img width="2880" height="1800" alt="firebase_2" src="https://github.com/user-attachments/assets/fb83e009-fb84-440c-b7c2-c5e29ff0b310" />
 
-- [ ] Pattern recognition model on behaviour data
+- [x] Pattern recognition model on behaviour data
+
+      ### Feature Engineering
+
+Three raw features are transformed before training:
+
+- **`hour_sin` / `hour_cos`** — Circular encoding of the hour-of-day so that midnight and 11pm are numerically close:
+  ```python
+  hour_sin = sin(2π × hour / 24)
+  hour_cos = cos(2π × hour / 24)
+  ```
+- **`temp_change`** — Difference between the previous and current room temperature, capturing warming/cooling trends.
+
+Final feature vector: `[temp_room, humidity, hour_sin, hour_cos, temp_change]`
+
+---
+
+### Model Architecture — Hierarchical Random Forest
+
+Six `RandomForestClassifier` models are trained in a two-level hierarchy that mirrors how a person actually decides AC settings:
+
+```
+Sensor Input (temp, humidity, hour)
+        │
+        ▼
+┌───────────────┐
+│  Mode Model   │  → HEAT (0)  or  COOL (1)
+└───────────────┘
+        │
+   ┌────┴────┐
+   ▼         ▼
+ HEAT       COOL
+ ┌──────┐  ┌──────┐   eco_model_heat / eco_model_cool
+ └──────┘  └──────┘   powerful_model_heat / powerful_model_cool
+```
+
+Each model in `ac_models_v2/` is persisted with `joblib`:
+
+| File | Predicts |
+|---|---|
+| `mode_model.pkl` | HEAT vs COOL |
+| `eco_model_heat.pkl` | Eco ON/OFF when mode = HEAT |
+| `eco_model_cool.pkl` | Eco ON/OFF when mode = COOL |
+| `powerful_model_heat.pkl` | Turbo ON/OFF when mode = HEAT |
+| `powerful_model_cool.pkl` | Turbo ON/OFF when mode = COOL |
+| `metadata.pkl` | Feature columns, model version |
+
+Training used `TimeSeriesSplit` validation to respect temporal ordering and prevent data leakage from future behaviour into past predictions.
+
+---
+
+### Feature Importance
+
+Temperature and time of day dominate every model. `hour_sin` is the strongest signal for mode selection (0.62), while `temp_room` drives eco and powerful decisions (0.33–0.35).
+
+![Feature Importance](Feature_imp.png)
+
+---
+
+### Model Performance
+
+| Model | Accuracy |
+|---|---|
+| Mode (HEAT/COOL) | **100%** |
+| Eco | **~91%** |
+| Powerful | **~91%** |
+
+The mode model achieves perfect separation because HEAT and COOL usage has a near-perfect correlation with hour-of-day in this household. Eco and powerful predictions carry a small error margin where ambiguous temperature ranges exist.
+
+![Confusion Matrices](Model_confussion_matrix.png)
+
+![Performance Comparison](Model_performace_camparison.png)
+
+---
+
+### Learned Patterns
+
+The models captured clear temporal and temperature-driven behaviour:
+
+- **Morning (6am–10am):** COOL mode when `temp_room > 25°C`; eco ON
+- **Afternoon (12pm–5pm):** COOL with powerful ON at higher temps
+- **Evening / Night:** HEAT more likely; eco preference rises
+- **Low temp + high humidity:** Powerful mode triggered
+
+![Hourly Predictions at Different Temperatures](Hourly_prediction_at_different_temp.png)
+
+---
+
+## Deploy Model for Fully Autonomous AC Control
+
+### Inference Daemon — `inference_worker.py`
+
+A Python daemon runs on a home server, polling every **10 minutes**. No user input required after deployment.
+
+**Full autonomous pipeline:**
+
+```
+Every 10 minutes
+       │
+       ▼
+1. Fetch latest 2 sensor readings from Firebase /sensor_logs/
+   └── Extract: temp_room, humidity, previous_temp, timestamp
+       │
+       ▼
+2. Feature engineering
+   └── hour_sin, hour_cos from timestamp
+   └── temp_change = prev_temp - current_temp
+       │
+       ▼
+3. Load models from ac_models_v2/ (joblib)
+       │
+       ▼
+4. Hierarchical inference
+   ├── mode_model.predict(features)      → HEAT or COOL
+   └── eco/powerful models (mode-gated)  → ON or OFF
+       │
+       ▼
+5. Push prediction to Firebase /commands/
+   └── { mode, eco, powerful, confidence, timestamp }
+       │
+       ▼
+6. ESP8266 polls /commands/
+   └── Fires IR signal to Mitsubishi AC (MITSUBISHI_HEAVY_152)
+   └── Updates internal state + logs back to Firebase
+```
+
+---
+
+### Authentication & Token Management
+
+The worker authenticates to Firebase REST API using an API key and auto-refreshes its ID token every **55 minutes** to stay ahead of the 60-minute expiry — ensuring no dropped commands during long uptime sessions.
+
+---
+
+### Server Logging
+
+Every inference cycle logs a full status line: timestamp, raw sensor values, predicted output, and model confidence.
+
+![Server Logging](server_loging.png)
+
+---
+
+### Predictions vs Actual Behaviour
+
+After deployment, model predictions were compared against continued manual presses. The outputs track real user behaviour closely across all three outputs (mode, eco, powerful):
+
+![Predictions vs Actual](Predictio_vs_actual.png)
+
+---
+
+### End-to-End Latency
+
+| Stage | Interval |
+|---|---|
+| Sensor log to Firebase | 15 min (auto) or on button press |
+| Firebase → SQLite sync | 10 sec poll |
+| Inference cycle | Every 10 min |
+| Command → IR execution | < 1 sec after ESP8266 poll |
+| **Total end-to-end** | **≤ 10–15 min** |
+
+---
+
+### Result
+
+The AC now adjusts itself based on room conditions and time of day — no button presses needed. The system learned a consistent enough preference pattern (temp + hour) that Random Forest classifiers achieve 91–100% accuracy, making autonomous control reliable for daily use.
+
 - [ ] Deploy model for fully autonomous AC control
 
 ## AC unit
