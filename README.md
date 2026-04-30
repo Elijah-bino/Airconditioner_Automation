@@ -133,7 +133,7 @@ python convert_db_to_csv.py
       
 <img width="2880" height="1800" alt="firebase_2" src="https://github.com/user-attachments/assets/fb83e009-fb84-440c-b7c2-c5e29ff0b310" />
 
-- [x] Pattern recognition model on behaviour data
+#- [x] Pattern recognition model on behaviour data
 
       ### Feature Engineering
 
