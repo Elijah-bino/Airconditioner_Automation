@@ -121,19 +121,19 @@ python convert_db_to_csv.py
 
 <img width="2252" height="1894" alt="remote_sim" src="https://github.com/user-attachments/assets/805da88b-bc01-4244-a0d0-b04bc2b98096" />
       
-- [x] Firebase Realtime Database integration
+### - ✅  Firebase Realtime Database integration
       
 <img width="2880" height="1794" alt="firebase_1" src="https://github.com/user-attachments/assets/9735f134-22b8-4b62-a6ff-339f0e55bf92" />
       
-- [x] SQLite sync script (real-time + 15-min polling)
+### - ✅  SQLite sync script (real-time + 15-min polling)
       
 <img width="2332" height="1218" alt="server_loging" src="https://github.com/user-attachments/assets/763b2a64-30a2-4120-9894-a7a60e63bc9e" />
 
-- [x] 1000+ rows of behaviour data collected
+### - ✅  1000+ rows of behaviour data collected
       
 <img width="2880" height="1800" alt="firebase_2" src="https://github.com/user-attachments/assets/fb83e009-fb84-440c-b7c2-c5e29ff0b310" />
 
-#- [x] Pattern recognition model on behaviour data
+### - ✅ Pattern recognition model on behaviour data
 
       ### Feature Engineering
 
@@ -188,7 +188,7 @@ Training used `TimeSeriesSplit` validation to respect temporal ordering and prev
 
 Temperature and time of day dominate every model. `hour_sin` is the strongest signal for mode selection (0.62), while `temp_room` drives eco and powerful decisions (0.33–0.35).
 
-![Feature Importance](Feature_imp.png)
+<img width="2228" height="1102" alt="Feature_imp" src="https://github.com/user-attachments/assets/74738ddf-bd0b-4a29-bd78-4a28ab5b4ba4" />
 
 ---
 
@@ -202,9 +202,11 @@ Temperature and time of day dominate every model. `hour_sin` is the strongest si
 
 The mode model achieves perfect separation because HEAT and COOL usage has a near-perfect correlation with hour-of-day in this household. Eco and powerful predictions carry a small error margin where ambiguous temperature ranges exist.
 
-![Confusion Matrices](Model_confussion_matrix.png)
+<img width="2226" height="758" alt="Model_confussion_matrix" src="https://github.com/user-attachments/assets/fc75c97e-bd92-4bd9-ae5b-8f42a5891846" />
 
-![Performance Comparison](Model_performace_camparison.png)
+
+<img width="2451" height="1206" alt="Model_performace_camparison" src="https://github.com/user-attachments/assets/9a2de66a-36da-4264-bceb-bf23cdecfd1b" />
+
 
 ---
 
@@ -217,11 +219,12 @@ The models captured clear temporal and temperature-driven behaviour:
 - **Evening / Night:** HEAT more likely; eco preference rises
 - **Low temp + high humidity:** Powerful mode triggered
 
-![Hourly Predictions at Different Temperatures](Hourly_prediction_at_different_temp.png)
+<img width="2210" height="720" alt="Hourly_prediction_at_different_temp" src="https://github.com/user-attachments/assets/2476f1c1-3554-49cc-9a01-17648b177b44" />
+
 
 ---
 
-## Deploy Model for Fully Autonomous AC Control
+### - ✅  Deploy Model for Fully Autonomous AC Control
 
 ### Inference Daemon — `inference_worker.py`
 
@@ -259,6 +262,10 @@ Every 10 minutes
    └── Updates internal state + logs back to Firebase
 ```
 
+### Sensor_log:
+<img width="576" height="838" alt="Sensor_logs_Realtime" src="https://github.com/user-attachments/assets/08b935da-7027-426c-bdad-f7acb38009ed" />
+
+
 ---
 
 ### Authentication & Token Management
@@ -271,7 +278,8 @@ The worker authenticates to Firebase REST API using an API key and auto-refreshe
 
 Every inference cycle logs a full status line: timestamp, raw sensor values, predicted output, and model confidence.
 
-![Server Logging](server_loging.png)
+<img width="2076" height="1214" alt="Complete_automation_server_log" src="https://github.com/user-attachments/assets/ff7d051a-65db-4037-a68e-80b92d5101cf" />
+
 
 ---
 
@@ -279,7 +287,9 @@ Every inference cycle logs a full status line: timestamp, raw sensor values, pre
 
 After deployment, model predictions were compared against continued manual presses. The outputs track real user behaviour closely across all three outputs (mode, eco, powerful):
 
-![Predictions vs Actual](Predictio_vs_actual.png)
+<img width="2082" height="1314" alt="Predictio_vs_actual" src="https://github.com/user-attachments/assets/9424adb3-1794-40c9-bf16-08e52402c3db" />
+
+<img width="634" height="264" alt="commands" src="https://github.com/user-attachments/assets/8a54ab60-f365-423d-b269-93132ae33372" />
 
 ---
 
@@ -298,8 +308,6 @@ After deployment, model predictions were compared against continued manual press
 ### Result
 
 The AC now adjusts itself based on room conditions and time of day — no button presses needed. The system learned a consistent enough preference pattern (temp + hour) that Random Forest classifiers achieve 91–100% accuracy, making autonomous control reliable for daily use.
-
-- [ ] Deploy model for fully autonomous AC control
 
 ## AC unit
 
