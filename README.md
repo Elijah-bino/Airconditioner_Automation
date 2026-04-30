@@ -117,7 +117,7 @@ python convert_db_to_csv.py
 
 ## Roadmap
 
-### - [x] Custom IR remote simulator on Wemos D1
+### - ✅  Custom IR remote simulator on Wemos D1
 
 <img width="2252" height="1894" alt="remote_sim" src="https://github.com/user-attachments/assets/805da88b-bc01-4244-a0d0-b04bc2b98096" />
       
